@@ -57,8 +57,8 @@ type Command struct {
 	flagVaultCACertBytes           string // CA Cert to trust for TLS with Vault.
 	flagProxyAddress               string // HTTP proxy address used to talk to the Vault service
 	flagVaultImage                 string // Name of the Vault Image to use
-	flagAgentContainerName         string // Name given to the vault agent sidecar container
-	flagAgentContainerInitName     string // Name given to the vault agent sidecar init container
+	flagContainerName              string // Name given to the vault agent sidecar container
+	flagContainerInitName          string // Name given to the vault agent sidecar init container
 	flagVaultAuthType              string // Type of Vault Auth Method to use
 	flagVaultAuthPath              string // Mount path of the Vault Auth Method
 	flagVaultNamespace             string // Vault enterprise namespace
@@ -202,8 +202,8 @@ func (c *Command) Run(args []string) int {
 		VaultNamespace:             c.flagVaultNamespace,
 		ProxyAddress:               c.flagProxyAddress,
 		ImageVault:                 c.flagVaultImage,
-		ContainerName:    					c.flagAgentContainerName,
-		ContainerInitName:    			c.flagAgentContainerInitName,
+		ContainerName:    					c.flagContainerName,
+		ContainerInitName:    			c.flagContainerInitName,
 		Clientset:                  clientset,
 		RequireAnnotation:          true,
 		Log:                        logger,

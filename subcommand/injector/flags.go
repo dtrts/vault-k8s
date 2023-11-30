@@ -72,8 +72,11 @@ type Specification struct {
 	// VaultImage is the AGENT_INJECT_VAULT_IMAGE environment variable.
 	VaultImage string `split_words:"true"`
 
-	// VaultAgentName is the AGENT_INJECT_VAULT_AGENT_NAME environment variable.
-	VaultAgentName string `split_words:"true"`
+	// Container Name is the AGENT_INJECT_CONTAINER_NAME environment variable.
+	ContainerName string `split_words:"true"`
+
+	// Container Init Name is the AGENT_INJECT_CONTAINER_INIT_NAME environment variable.
+	ContainerInitName string `split_words:"true"`
 
 	// VaultAuthType is the AGENT_INJECT_VAULT_AUTH_TYPE environment variable.
 	VaultAuthType string `split_words:"true"`
@@ -166,9 +169,9 @@ func (c *Command) init() {
 		"PEM-encoded TLS private key to serve. If blank, will generate random cert.")
 	c.flagSet.StringVar(&c.flagVaultImage, "vault-image", agent.DefaultVaultImage,
 		fmt.Sprintf("Docker image for Vault. Defaults to %q.", agent.DefaultVaultImage))
-	c.flagSet.StringVar(&c.flagAgentContainerName, "agent-container-name", agent.DefaultAgentContainerName,
+	c.flagSet.StringVar(&c.flagContainerName, "agent-container-name", agent.DefaultAgentContainerName,
 		fmt.Sprintf("Name of the vault agent container. Defaults to %q.", agent.DefaultAgentContainerName))
-	c.flagSet.StringVar(&c.flagAgentContainerName, "agent-container-init-name", agent.DefaultAgentContainerInitName,
+	c.flagSet.StringVar(&c.flagContainerName, "agent-container-init-name", agent.DefaultAgentContainerInitName,
 		fmt.Sprintf("Name of the vault agent init container. Defaults to %q.", agent.DefaultAgentContainerInitName))
 	c.flagSet.StringVar(&c.flagVaultService, "vault-address", "",
 		"Address of the Vault server.")
@@ -308,12 +311,12 @@ func (c *Command) parseEnvs() error {
 		c.flagVaultImage = envs.VaultImage
 	}
 
-	if envs.VaultAgentName != "" {
-		c.flagAgentContainerName = envs.VaultAgentName
+	if envs.ContainerName != "" {
+		c.flagContainerName = envs.ContainerName
 	}
 
-	if envs.VaultAgentName != "" {
-		c.flagAgentContainerInitName = envs.VaultAgentName
+	if envs.ContainerInitName != "" {
+		c.flagContainerInitName = envs.ContainerInitName
 	}
 
 	if envs.VaultAddr != "" {
