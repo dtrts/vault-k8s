@@ -24,6 +24,8 @@ const (
 	DefaultAgentRunAsGroup                  = 1000
 	DefaultAgentRunAsSameUser               = false
 	DefaultAgentAllowPrivilegeEscalation    = false
+	DefaultAgentContainerInitName           = "vault-agent-init"
+	DefaultAgentContainerName               = "vault-agent"
 	DefaultAgentDropCapabilities            = "ALL"
 	DefaultAgentSetSecurityContext          = true
 	DefaultAgentReadOnlyRoot                = true
@@ -53,6 +55,13 @@ type Agent struct {
 	// ImageName is the name of the Vault image to use for the
 	// sidecar container.
 	ImageName string
+
+	// ContainerName is the name to be given to the sidecar container.
+	ContainerName string
+
+	// ContainerName is the name to be given to the sidecar init
+	// container.
+	ContainerInitName string
 
 	// Containers determine which containers should be injected
 	Containers []string
@@ -357,6 +366,8 @@ func New(pod *corev1.Pod) (*Agent, error) {
 		Annotations:               pod.Annotations,
 		ConfigMapName:             pod.Annotations[AnnotationAgentConfigMap],
 		ImageName:                 pod.Annotations[AnnotationAgentImage],
+		ContainerName:             pod.Annotations[AnnotationAgentName],
+		ContainerInitName:         pod.Annotations[AnnotationAgentInitName],
 		DefaultTemplate:           pod.Annotations[AnnotationAgentInjectDefaultTemplate],
 		LimitsCPU:                 pod.Annotations[AnnotationAgentLimitsCPU],
 		LimitsMem:                 pod.Annotations[AnnotationAgentLimitsMem],
@@ -662,7 +673,7 @@ func (a *Agent) Patch() ([]byte, error) {
 
 		// Add Volume Mounts
 		for i, container := range containers {
-			if container.Name == "vault-agent-init" {
+			if container.Name == a.ContainerInitName {
 				continue
 			}
 			patches = append(patches, addVolumeMounts(

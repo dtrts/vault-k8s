@@ -98,7 +98,7 @@ func (a *Agent) ContainerSidecar() (corev1.Container, error) {
 	lifecycle := a.createLifecycle()
 
 	newContainer := corev1.Container{
-		Name:         "vault-agent",
+		Name:         a.ContainerName,
 		Image:        a.ImageName,
 		Env:          envs,
 		Resources:    resources,

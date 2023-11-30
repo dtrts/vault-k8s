@@ -55,6 +55,8 @@ type Handler struct {
 	VaultNamespace             string
 	ProxyAddress               string
 	ImageVault                 string
+	ContainerName              string
+	ContainerInitName          string
 	Clientset                  *kubernetes.Clientset
 	Log                        hclog.Logger
 	RevokeOnShutdown           bool
@@ -124,9 +126,10 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusInternalServerError)
 		h.Log.Error("error on request", "Error", msg, "Code", http.StatusInternalServerError)
 		return
-	} else {
-		admResp.Response = h.Mutate(admReq.Request)
 	}
+
+	admResp.Response = h.Mutate(admReq.Request)
+
 
 	// Default to a v1 AdmissionReview, otherwise the API server may not recognize the request
 	// if multiple AdmissionReview versions are permitted by the webhook config.
@@ -189,6 +192,8 @@ func (h *Handler) Mutate(req *admissionv1.AdmissionRequest) *admissionv1.Admissi
 	h.Log.Debug("setting default annotations..")
 	cfg := agent.AgentConfig{
 		Image:                      h.ImageVault,
+		Name:                       h.ContainerName,
+		InitName:                   h.ContainerName,
 		Address:                    h.VaultAddress,
 		AuthType:                   h.VaultAuthType,
 		AuthPath:                   h.VaultAuthPath,

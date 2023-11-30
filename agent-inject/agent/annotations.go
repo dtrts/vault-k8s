@@ -93,6 +93,12 @@ const (
 	// AnnotationAgentImage is the name of the Vault docker image to use.
 	AnnotationAgentImage = "vault.hashicorp.com/agent-image"
 
+	// AnnotationAgentName is the name given to the sidecar container
+	AnnotationAgentName = "vault.hashicorp.com/agent-name"
+
+	// AnnotationAgentInitName is the name given to the sidecar init container
+	AnnotationAgentInitName = "vault.hashicorp.com/agent-init-name"
+
 	// AnnotationAgentRequestNamespace is the Kubernetes namespace where the request
 	// originated from.
 	AnnotationAgentRequestNamespace = "vault.hashicorp.com/agent-request-namespace"
@@ -314,6 +320,8 @@ const (
 
 type AgentConfig struct {
 	Image                      string
+	Name                       string
+	InitName                   string
 	Address                    string
 	AuthType                   string
 	AuthPath                   string
@@ -398,6 +406,21 @@ func Init(pod *corev1.Pod, cfg AgentConfig) error {
 			cfg.Image = DefaultVaultImage
 		}
 		pod.ObjectMeta.Annotations[AnnotationAgentImage] = cfg.Image
+	}
+
+	if _, ok := pod.ObjectMeta.Annotations[AnnotationAgentName]; !ok {
+		if cfg.Name == "" {
+			cfg.Name = DefaultAgentContainerName
+
+		}
+		pod.ObjectMeta.Annotations[AnnotationAgentName] = cfg.Name
+	}
+
+	if _, ok := pod.ObjectMeta.Annotations[AnnotationAgentInitName]; !ok {
+		if cfg.InitName == "" {
+			cfg.InitName = DefaultAgentContainerInitName
+		}
+		pod.ObjectMeta.Annotations[AnnotationAgentInitName] = cfg.InitName
 	}
 
 	if _, ok := pod.ObjectMeta.Annotations[AnnotationAgentRequestNamespace]; !ok {

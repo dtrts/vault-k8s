@@ -84,7 +84,7 @@ func (a *Agent) ContainerInitSidecar() (corev1.Container, error) {
 	}
 
 	newContainer := corev1.Container{
-		Name:         "vault-agent-init",
+		Name:         a.ContainerInitName,
 		Image:        a.ImageName,
 		Env:          envs,
 		Resources:    resources,
