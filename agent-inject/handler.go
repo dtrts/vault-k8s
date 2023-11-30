@@ -193,7 +193,7 @@ func (h *Handler) Mutate(req *admissionv1.AdmissionRequest) *admissionv1.Admissi
 	cfg := agent.AgentConfig{
 		Image:                      h.ImageVault,
 		Name:                       h.ContainerName,
-		InitName:                   h.ContainerName,
+		InitName:                   h.ContainerInitName,
 		Address:                    h.VaultAddress,
 		AuthType:                   h.VaultAuthType,
 		AuthPath:                   h.VaultAuthPath,
